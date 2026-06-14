@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #e5ddd5; }
+    #chat-box { width: 350px; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    #display { font-size: 24px; margin-bottom: 20px; text-align: center; }
+    .btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    button { padding: 15px; font-size: 18px; border: none; border-radius: 5px; background: #0084ff; color: white; cursor: pointer; }
+    #message { margin-top: 15px; font-weight: bold; color: #007bff; text-align: center; }
+</style>
+</head>
+<body>
+
+<div id="chat-box">
+    <div id="display">Stage 1: 12 + 13 = ?</div>
+    <div id="input-area">
+        <input type="text" id="answer" readonly style="width: 100%; font-size: 24px; text-align: center;">
+    </div>
+    <div class="btn-grid" style="margin-top: 15px;">
+        <script>
+            for(let i=1; i<=9; i++) document.write(`<button onclick="addNum(${i})">${i}</button>`);
+            document.write(`<button onclick="clearInput()">C</button><button onclick="addNum(0)">0</button><button onclick="check()">OK</button>`);
+        </script>
+    </div>
+    <div id="message"></div>
+</div>
+
+<script>
+    let stage = 1, count = 0, num1, num2, answer, attempts = 0;
+    
+    function nextQuestion() {
+        if (stage === 1) { num1 = Math.floor(Math.random()*40)+10; num2 = Math.floor(Math.random()*40)+10; }
+        else if (stage === 2) { num1 = Math.floor(Math.random()*50)+20; num2 = Math.floor(Math.random()*30)+10; }
+        else { num1 = Math.floor(Math.random()*50)+50; num2 = Math.floor(Math.random()*50)+50; }
+        
+        answer = num1 + num2;
+        document.getElementById('display').innerText = `Stage ${stage}: ${num1} + ${num2} = ?`;
+        document.getElementById('answer').value = "";
+    }
+
+    function addNum(n) { document.getElementById('answer').value += n; }
+    function clearInput() { document.getElementById('answer').value = ""; }
+
+    function check() {
+        let userAns = parseInt(document.getElementById('answer').value);
+        if (userAns === answer) {
+            document.getElementById('message').innerText = "🌟 You are excellent!";
+            count++; attempts = 0;
+            if (count >= 5) {
+                stage++; count = 0;
+                alert("You are moving to the next stage!");
+            }
+            nextQuestion();
+        } else {
+            if (attempts === 0) {
+                document.getElementById('message').innerText = "⚠️ Try again! One more chance.";
+                attempts++;
+            } else {
+                document.getElementById('message').innerText = "❌ Wrong. Moving to next.";
+                attempts = 0; nextQuestion();
+            }
+        }
+    }
+    nextQuestion();
+</script>
+</body>
+</html>
